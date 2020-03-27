@@ -22,7 +22,7 @@ namespace MarketAPI
                 throw new ArgumentNullException(nameof(apiKey));
             }
 
-            _client = new WebClient();
+            _client = new WebClient("https://market.csgo.com/");
             _client.DefaultQueryParameters.Add("key", apiKey);
             _client.TimespanBetweenRequests = new TimeSpan(0, 0, 0, 0, 250);
 
@@ -54,6 +54,14 @@ namespace MarketAPI
             itemNames.ForEach(e => dict.Add(("list_hash_name[]", e)));
 
             return await GetObjectAsync<GetItemResult>("api/v2/search-list-items-by-hash-name-all", dict);
+        }
+
+        public async Task<GetItemHistoryResult> GetItemHistoryAsync(List<string> items)
+        {
+            var dict = new List<(string, string)>();
+            items.ForEach(e => dict.Add(("list_hash_name[]", e)));
+
+            return await GetObjectAsync<GetItemHistoryResult>("api/v2/get-list-items-info", dict);
         }
 
         public async Task<GetItemSpecificResult> GetItemSpecificAsync(string itemHashName)

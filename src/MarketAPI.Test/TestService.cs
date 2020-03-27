@@ -30,15 +30,21 @@ namespace MarketAPI.Test
         }
 
         [TestMethod]
+        public async Task GetItemTest()
+        {
+            Assert.IsNotNull(await _service.GetItemAsync("Chroma 2 Case"));
+        }
+
+        [TestMethod]
         public async Task GetItemListTest()
         {
             Assert.IsTrue((await _service.GetItemListAsync()).Items.Count > 0);
         }
 
         [TestMethod]
-        public async Task GetItemTest()
+        public async Task GetItemHistoryTest()
         {
-            Assert.IsNotNull(await _service.GetItemAsync("Chroma 2 Case"));
+            Assert.IsTrue((await _service.GetItemHistoryAsync(new System.Collections.Generic.List<string>() { "Chroma 2 Case" })).Data?.Count > 0);
         }
 
         [TestMethod]
