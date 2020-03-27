@@ -1,0 +1,4 @@
+[submodule "sub/SmartWebClient"]
+	path = sub/SmartWebClient
+	url = https://github.com/nils2525/SmartWebClient.git
+	branch = master
