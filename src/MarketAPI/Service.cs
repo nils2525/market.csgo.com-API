@@ -91,7 +91,7 @@ namespace MarketAPI
             {
                 if (!response.IsSuccessfully)
                 {
-                    Console.WriteLine("SendRequest | IsSuccessfully: " + response.IsSuccessfully + " - Message: " + response.ErrorMessage);
+                    Console.WriteLine("Warning: " + response.ErrorMessage);
                 }
             }
             return requestResult;
