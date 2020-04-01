@@ -59,5 +59,12 @@ namespace MarketAPI.Test
             var item = await _service.GetItemSpecificAsync("Spectrum 2 Case");
             var buy = await _service.BuyItemAsync("Spectrum 2 Case", item.Data.First().Price);
         }
+
+        [TestMethod]
+        public async Task GetBalanceTest()
+        {
+            var balance = await _service.GetBalanceAsync();
+            Assert.IsNotNull(balance);
+        }
     }
 }

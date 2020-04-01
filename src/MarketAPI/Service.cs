@@ -79,6 +79,11 @@ namespace MarketAPI
             return await GetObjectAsync<BuyItemResponse>("api/v2/buy", new List<(string, string)>() { ("id", id.ToString()), ("price", ((int)(price * 1000)).ToString()) });
         }
 
+        public async Task<GetBalanceResponse> GetBalanceAsync()
+        {
+            return await GetObjectAsync<GetBalanceResponse>("api/v2/get-money");
+        }
+
         private async Task<T> GetObjectAsync<T>(string path, string queryKey, string queryValue)
         {
             return await GetObjectAsync<T>(path, new List<(string, string)>() { (queryKey, queryValue) });
