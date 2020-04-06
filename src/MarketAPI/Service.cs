@@ -84,6 +84,11 @@ namespace MarketAPI
             return await GetObjectAsync<GetBalanceResponse>("api/v2/get-money");
         }
 
+        public async Task<PingResult> PingAsync()
+        {
+            return await GetObjectAsync<PingResult>("api/v2/ping");
+        }
+
         private async Task<T> GetObjectAsync<T>(string path, string queryKey, string queryValue)
         {
             return await GetObjectAsync<T>(path, new List<(string, string)>() { (queryKey, queryValue) });
@@ -96,7 +101,7 @@ namespace MarketAPI
             {
                 if (!response.IsSuccessfully)
                 {
-                    Logger.LogToConsole(Logger.LogType.Warning, response.ErrorMessage);
+                    Logger.LogToConsole(Logger.LogType.Warning, response.ErrorMessage + response.Message);
                 }
             }
             return requestResult;

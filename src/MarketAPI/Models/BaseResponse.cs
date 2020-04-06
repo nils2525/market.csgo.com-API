@@ -12,5 +12,8 @@ namespace MarketAPI.Models
 
         [JsonProperty("error")]
         public string ErrorMessage { get; set; }
+
+        [JsonProperty("message")]
+        public string Message { get; set; }
     }
 }
