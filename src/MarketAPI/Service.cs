@@ -10,6 +10,9 @@ namespace MarketAPI
     {
         private WebClient _client;
 
+        public string Currency { get; private set; }
+        public bool IsInitialized { get; private set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -25,7 +28,17 @@ namespace MarketAPI
             _client = new WebClient("https://market.csgo.com/");
             _client.DefaultQueryParameters.Add("key", apiKey);
             _client.TimespanBetweenRequests = new TimeSpan(0, 0, 0, 0, 250);
+        }
 
+        public async Task<bool> Init()
+        {
+            var balance = await GetBalanceAsync();
+            if (!String.IsNullOrWhiteSpace(balance?.Currency))
+            {
+                Currency = balance.Currency;
+                return IsInitialized = true;
+            }
+            return IsInitialized = false;
         }
 
         public async Task<GetMySteamIDResponse> GetMySteamIDAsync()
@@ -35,12 +48,12 @@ namespace MarketAPI
 
         public async Task<GetPriceListResponse> GetPriceListAsync()
         {
-            return await GetObjectAsync<GetPriceListResponse>("api/v2/prices/USD.json");
+            return await GetObjectAsync<GetPriceListResponse>($"api/v2/prices/{Currency}.json");
         }
 
         public async Task<GetItemListResponse> GetItemListAsync()
         {
-            return await GetObjectAsync<GetItemListResponse>("api/v2/prices/class_instance/USD.json");
+            return await GetObjectAsync<GetItemListResponse>($"api/v2/prices/class_instance/{Currency}.json");
         }
 
         public async Task<GetItemResult> GetItemAsync(string itemHashName)
@@ -78,6 +91,17 @@ namespace MarketAPI
         {
             return await GetObjectAsync<BuyItemResponse>("api/v2/buy", new List<(string, string)>() { ("id", id.ToString()), ("price", ((int)(price * 1000)).ToString()) });
         }
+
+        public async Task<BuyItemResponse> BuyItemForAsync(string itemHashName, double price, string steam32ID, string tradeToken)
+        {
+            return await GetObjectAsync<BuyItemResponse>("api/v2/buy", new List<(string, string)>() { ("hash_name", itemHashName), ("price", ((int)(price * 1000)).ToString()), ("partner", steam32ID), ("token", tradeToken) });
+        }
+
+        public async Task<BuyItemResponse> BuyItemForAsync(int id, double price, string steam32ID, string tradeToken)
+        {
+            return await GetObjectAsync<BuyItemResponse>("api/v2/buy", new List<(string, string)>() { ("id", id.ToString()), ("price", ((int)(price * 1000)).ToString()), ("partner", steam32ID), ("token", tradeToken) });
+        }
+
 
         public async Task<GetBalanceResponse> GetBalanceAsync()
         {
