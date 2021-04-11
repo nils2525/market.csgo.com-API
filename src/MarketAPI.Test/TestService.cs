@@ -20,7 +20,7 @@ namespace MarketAPI.Test
         [TestMethod]
         public async Task GetMySteamIDTest()
         {
-            Assert.IsTrue(!String.IsNullOrWhiteSpace((await _service.GetMySteamIDAsync()).SteamID64));
+            Assert.IsTrue((await _service.GetMySteamIDAsync()).SteamID64 > 0);
         }
 
         [TestMethod]
