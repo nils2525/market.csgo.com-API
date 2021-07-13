@@ -3,6 +3,7 @@ using SmartWebClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MarketAPI
@@ -22,6 +23,7 @@ namespace MarketAPI
         /// </summary>
         private List<DateTime> _requestTimeHistory = new List<DateTime>();
 
+        private object _rateLimitLock = new object();
 
         public string Currency { get; private set; }
         public bool IsInitialized { get; private set; }
@@ -150,7 +152,7 @@ namespace MarketAPI
 
         private async Task<T> GetObjectAsync<T>(string path, List<(string, string)> queryParameters = null)
         {
-            await PreventRateLimitAsync();
+            PreventRateLimitAsync();
 
             var requestResult = await _client.GetObjectAsync<T>(path, queryParameters);
             if (requestResult is BaseResponse response)
@@ -163,22 +165,25 @@ namespace MarketAPI
             return requestResult;
         }
 
-        private async Task PreventRateLimitAsync()
+        private void PreventRateLimitAsync()
         {
-            bool first = true;
-            while (_requestTimeHistory.Where(c => c.AddSeconds(1) <= DateTime.Now).Count() > RequestsPerSecond - 1)
+            lock (_rateLimitLock)
             {
-                if (first)
+                bool first = true;
+                while (_requestTimeHistory.Where(c => c.AddSeconds(1) >= DateTime.Now).Count() > RequestsPerSecond - 1)
                 {
-                    first = false; 
-                    Logger.LogToConsole(Logger.LogType.Information, "Ratelimit wait");
+                    if (first)
+                    {
+                        first = false;
+                        Logger.LogToConsole(Logger.LogType.Information, "Ratelimit wait");
+                    }
+                    Logger.LogToConsole(Logger.LogType.Information, "~", false);
+                    Thread.Sleep(10);
                 }
-                Logger.LogToConsole(Logger.LogType.Information, ".", false);
-                await Task.Delay(10);
-            }
 
-            _requestTimeHistory.RemoveAll(c => c.AddSeconds(1) <= DateTime.Now);
-            _requestTimeHistory.Add(DateTime.Now);
+                _requestTimeHistory.RemoveAll(c => c.AddSeconds(1) <= DateTime.Now);
+                _requestTimeHistory.Add(DateTime.Now);
+            }
         }
     }
 }
