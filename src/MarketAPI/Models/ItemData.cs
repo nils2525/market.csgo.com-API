@@ -5,7 +5,7 @@ namespace MarketAPI.Models
     public class ItemData
     {
         [JsonProperty("id")]
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         [JsonProperty("class")]
         public long Class { get; set; }

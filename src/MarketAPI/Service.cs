@@ -119,7 +119,7 @@ namespace MarketAPI
             return await GetObjectAsync<BuyItemResponse>("api/v2/buy", new List<(string, string)>() { ("hash_name", itemHashName), ("price", ((int)(price * 1000)).ToString()) });
         }
 
-        public async Task<BuyItemResponse> BuyItemAsync(int id, double price)
+        public async Task<BuyItemResponse> BuyItemAsync(long id, double price)
         {
             return await GetObjectAsync<BuyItemResponse>("api/v2/buy", new List<(string, string)>() { ("id", id.ToString()), ("price", ((int)(price * 1000)).ToString()) });
         }
@@ -129,7 +129,7 @@ namespace MarketAPI
             return await GetObjectAsync<BuyItemResponse>("api/v2/buy", new List<(string, string)>() { ("hash_name", itemHashName), ("price", ((int)(price * 1000)).ToString()), ("partner", steam32ID.ToString()), ("token", tradeToken) });
         }
 
-        public async Task<BuyItemResponse> BuyItemForAsync(int id, double price, int steam32ID, string tradeToken)
+        public async Task<BuyItemResponse> BuyItemForAsync(long id, double price, int steam32ID, string tradeToken)
         {
             return await GetObjectAsync<BuyItemResponse>("api/v2/buy", new List<(string, string)>() { ("id", id.ToString()), ("price", ((int)(price * 1000)).ToString()), ("partner", steam32ID.ToString()), ("token", tradeToken) });
         }
